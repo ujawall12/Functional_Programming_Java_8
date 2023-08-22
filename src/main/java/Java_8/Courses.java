@@ -14,7 +14,7 @@ public class Courses {
         this.reviewScore = reviewScore;
         this.noOfStudents = noOfStudents;
     }
-
+//
     public String getName() {
         return name;
     }
