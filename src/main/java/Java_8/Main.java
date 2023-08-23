@@ -1,11 +1,20 @@
 package Java_8;
 
+import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
+
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
         List<Integer> list=List.of(1,33,22,52,56,21,90,3,4,4,5);
         // Sum of all elements in a list
         System.out.println("Sum of all elements in the list is/n");
@@ -81,7 +90,8 @@ public class Main {
         //To find first element that meets a specific criteria
         System.out.println("\nFind first element with reviewScore>92\n");
         Courses courseResult=
-                courses.stream().sorted(Comparator.comparing(Courses::getReviewScore)).filter(c->c.getReviewScore()>92).findFirst().get();
+                courses.stream().sorted(Comparator.comparing(Courses::getReviewScore)).filter(c->c.getReviewScore()>92)
+                        .findFirst().get();
 
         System.out.println(courseResult);
 
@@ -112,6 +122,60 @@ public class Main {
                         Collectors.maxBy(Comparator.comparing(Courses::getReviewScore))))
                 );
 
+        // Create Stream using Stream.of()
+        System.out.println("\nStream using stream.of()\n");
+        Stream.of(1,2,3,4,5,6).forEach(System.out::println);
+
+        //Create streams of all elements of array
+        int num[]={1,2,3,4,5};
+        System.out.println("\nStream of elements of int array\n");
+        Arrays.stream(num).forEach(System.out::println);
+
+        //Create a stream based on some condition
+        System.out.println("\nStream based on some specific condition\n");
+        int result7=IntStream.range(1,11).sum();
+        System.out.println(result7);
+
+        //Create a stream of numbers based on some specific condition and store it into a list
+        System.out.println("\nStream of primitive stored in a list\n");
+        List<Integer> result8=
+                IntStream.iterate(1,e->e+2).limit(10).boxed()
+                        .collect(Collectors.toList());
+
+        System.out.println(result8);
+
+        //The case if the result is going beyond Long.MAX_VALUE
+        System.out.println("\nFor the calculations > Long.MAX_VALUE\n"+
+        LongStream.range(1,50).mapToObj(BigInteger::valueOf)
+                .reduce(BigInteger.ONE,BigInteger::multiply)
+        ); //Factorial of 50
+
+        //Print all the characters of courses
+        System.out.println("\nPrinting all the characters of courses\n" +
+        courses.stream().map(c->c.getName().split("")).
+                flatMap(Arrays::stream).collect(Collectors.toList())
+        );
+
+        //Replacing the whole list with something
+        System.out.println("\nReplacing the whole list with uppercase\n");
+        List<String> modifyableCourse=new ArrayList<>(coursestemp);
+        modifyableCourse.replaceAll(c->c.toUpperCase());
+        System.out.println(modifyableCourse);
+
+        //Remove the courses with length < 6
+        System.out.println("\nRemove the courses whose length is < 6\n");
+        modifyableCourse.removeIf(c->c.length()<6);
+        System.out.println(modifyableCourse);
+
+
+        //Manipulating files using Stream
+        System.out.println("\nFiles using streams\n");
+        Files.lines(Paths.get("file.txt")).map(str -> str.split(" ")).
+                flatMap(Arrays::stream).distinct().sorted().forEach(System.out::println);
+
+        Files.list(Paths.get("."))
+                .filter(Files::isDirectory)
+                .forEach(System.out::println);
 
     }
 }
