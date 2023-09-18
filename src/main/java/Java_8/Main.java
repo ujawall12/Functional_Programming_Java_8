@@ -3,10 +3,8 @@ package Java_8;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -176,6 +174,61 @@ public class Main {
         Files.list(Paths.get("."))
                 .filter(Files::isDirectory)
                 .forEach(System.out::println);
+
+        List<Integer> demo=List.of(1,2,5,4,23,24,52,78,18,9,11,121,212,1,2,5);
+
+        //******************To print all numbers starting with 1*****************************************************
+        System.out.println("\nAll numbers starting with 1 are\n");
+        demo.stream().map(n->n+"").filter(s->s.startsWith("1")).forEach(System.out::println);
+
+        //******************To print all the duplicate numbers*******************************************************
+        System.out.println("\nDuplicate numbers are \n");
+        Set<Integer> result9=
+                demo.stream().filter(i-> Collections.frequency(demo,i)>1).collect(Collectors.toSet());
+        System.out.println(result9);
+
+        //                          OR
+        System.out.println("\nDuplicate numbers are (Alterntive way)\n");
+        Set<Integer> set=new HashSet<>();
+        demo.stream().filter(i-> !set.add(i)).forEach(System.out::println);
+
+        //*****************************To find the total number of elements in the list******************************
+        System.out.println("\nFind total number of elements in list\n"+
+                demo.stream().count());
+
+        //*****************************To the maximum number in a list***********************************************
+        System.out.println("\nMaximum element in the list is \n"+
+                demo.stream().reduce(Integer.MIN_VALUE, Integer::max)
+        );
+
+        //*****************************To find the first non repeating character in a string******************************
+        String string="Aaababcd";
+//        char arr[]=string.toCharArray();
+        Character result10= string.chars().mapToObj(i-> Character.toLowerCase(Character.valueOf((char)i)))
+                .collect(Collectors.groupingBy(Function.identity(),LinkedHashMap::new,Collectors.counting()))
+                .entrySet().stream().filter(e->e.getValue()==1).map(e->e.getKey())
+                .findFirst().get();
+        System.out.println("\nThe first non repating character in the string is \n"+result10);
+
+        //*****************************To find first repeating character in a string**************************************
+        Character result11=string.chars().mapToObj(s->Character.toLowerCase(Character.valueOf((char) s)))
+                .collect(Collectors.groupingBy(Function.identity(),LinkedHashMap::new,Collectors.counting()))
+                .entrySet().stream().filter(e->e.getValue()>1).map(e->e.getKey()).findFirst().get();
+        System.out.println("\nThe first repating character in the string is \n"+result11);
+
+        //*********************To find frequency of each element in a list************************************************
+        System.out.println("\nFrequency of each element in a list is\n"+
+                demo.stream()
+                        .collect(Collectors.groupingBy(Function.identity(),Collectors.counting()))
+        );
+
+        //*********************To find frequency of each character in a string******************************************
+        System.out.println("\nFind the frequency of each character in a string\n"+
+                string.chars().mapToObj(i->Character.toLowerCase(Character.valueOf((char) i)))
+                        .collect(Collectors.groupingBy(Function.identity(),Collectors.counting()))
+        );
+
+
 
     }
 }
