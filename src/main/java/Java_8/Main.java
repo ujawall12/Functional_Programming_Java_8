@@ -10,6 +10,9 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
+
 
 public class Main {
     public static void main(String[] args) throws Exception{
@@ -110,13 +113,13 @@ public class Main {
         //To find total number of courses in each category
         System.out.println("\n To find total number of courses category wise\n"+
 
-        courses.stream().collect(Collectors.groupingBy(Courses::getCategory,Collectors.counting()))
+        courses.stream().collect(groupingBy(Courses::getCategory, counting()))
         );
 
 
         //To group the courses category wise & get the highest review course of that category.
         System.out.println("\nGroup courses category wise with highest reviewed course of that category is\n"+
-                courses.stream().collect(Collectors.groupingBy(Courses::getCategory,
+                courses.stream().collect(groupingBy(Courses::getCategory,
                         Collectors.maxBy(Comparator.comparing(Courses::getReviewScore))))
                 );
 
@@ -167,13 +170,13 @@ public class Main {
 
 
         //Manipulating files using Stream
-        System.out.println("\nFiles using streams\n");
-        Files.lines(Paths.get("file.txt")).map(str -> str.split(" ")).
-                flatMap(Arrays::stream).distinct().sorted().forEach(System.out::println);
-
-        Files.list(Paths.get("."))
-                .filter(Files::isDirectory)
-                .forEach(System.out::println);
+//        System.out.println("\nFiles using streams\n");
+//        Files.lines(Paths.get("file.txt")).map(str -> str.split(" ")).
+//                flatMap(Arrays::stream).distinct().sorted().forEach(System.out::println);
+//
+//        Files.list(Paths.get("."))
+//                .filter(Files::isDirectory)
+//                .forEach(System.out::println);
 
         List<Integer> demo=List.of(1,2,5,4,23,24,52,78,18,9,11,121,212,1,2,5);
 
@@ -205,30 +208,33 @@ public class Main {
         String string="Aaababcd";
 //        char arr[]=string.toCharArray();
         Character result10= string.chars().mapToObj(i-> Character.toLowerCase(Character.valueOf((char)i)))
-                .collect(Collectors.groupingBy(Function.identity(),LinkedHashMap::new,Collectors.counting()))
+                .collect(groupingBy(Function.identity(),LinkedHashMap::new, counting()))
                 .entrySet().stream().filter(e->e.getValue()==1).map(e->e.getKey())
                 .findFirst().get();
         System.out.println("\nThe first non repating character in the string is \n"+result10);
 
         //*****************************To find first repeating character in a string**************************************
         Character result11=string.chars().mapToObj(s->Character.toLowerCase(Character.valueOf((char) s)))
-                .collect(Collectors.groupingBy(Function.identity(),LinkedHashMap::new,Collectors.counting()))
+                .collect(groupingBy(Function.identity(),LinkedHashMap::new, counting()))
                 .entrySet().stream().filter(e->e.getValue()>1).map(e->e.getKey()).findFirst().get();
         System.out.println("\nThe first repating character in the string is \n"+result11);
 
         //*********************To find frequency of each element in a list************************************************
         System.out.println("\nFrequency of each element in a list is\n"+
                 demo.stream()
-                        .collect(Collectors.groupingBy(Function.identity(),Collectors.counting()))
+                        .collect(groupingBy(Function.identity(), counting()))
         );
 
         //*********************To find frequency of each character in a string******************************************
         System.out.println("\nFind the frequency of each character in a string\n"+
                 string.chars().mapToObj(i->Character.toLowerCase(Character.valueOf((char) i)))
-                        .collect(Collectors.groupingBy(Function.identity(),Collectors.counting()))
+                        .collect(groupingBy(Function.identity(), counting()))
         );
 
-
+        //                                OR
+        Map<String,Long> frequency=Arrays.stream(string.split(""))
+                .collect(groupingBy(Function.identity(),counting()));
+        System.out.println("Frequency of each character in a string\n"+frequency);
 
     }
 }
